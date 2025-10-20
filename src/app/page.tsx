@@ -41,8 +41,13 @@ export default function Home() {
 
   const ensureSocket = () => {
     if (!socketRef.current) {
-      console.log('Creating socket connection to http://localhost:3000');
-      socketRef.current = io('http://localhost:3000', { 
+      // Use the current origin in production, or localhost in development
+      const socketUrl = typeof window !== 'undefined' 
+        ? (window.location.hostname === 'localhost' ? 'http://localhost:3000' : window.location.origin)
+        : 'http://localhost:3000';
+      
+      console.log('Creating socket connection to', socketUrl);
+      socketRef.current = io(socketUrl, { 
         transports: ["polling", "websocket"],
         autoConnect: true
       });
